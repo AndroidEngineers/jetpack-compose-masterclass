@@ -1,0 +1,53 @@
+🧠 Complete Breakdown: How Jetpack Compose’s remember Really Works
+
+Most Android devs use remember, but very few actually understand how it remembers.
+
+Let’s fix that 👇
+⚙️ Step 1: remember Function
+It’s your entry point for caching state across recompositions.
+It checks if your keys (key1, key2, etc.) changed, and if yes — recalculates your value.
+remember(key1, key2) { calculation() }
+Internally, it calls currentComposer.changed(key) for each key — combining results to decide if recomputation is needed.
+
+🧩 Step 2: changed() — Detecting Key Changes
+override fun changed(value: Any?): Boolean {
+ return if (nextSlot() != value) {
+ updateValue(value)
+ true
+ } else false
+}
+- Reads the previous slot value
+- Compares with the current one
+- If changed → updates slot table + marks invalid
+This is how Compose tracks what really changed.
+
+📦 Step 3: cache() — The Caching Core
+cache(invalid) {
+ // Only runs if keys changed or cache is empty
+}
+If the cache is valid → returns old value
+If invalid → recalculates + updates cache
+This is what makes Compose “smart”:
+No unnecessary recompositions. Just pure efficiency.
+
+🔄 Step 4: RememberObserver — Lifecycle for Remembered Objects
+interface RememberObserver {
+ fun onRemembered()
+ fun onForgotten()
+ fun onAbandoned()
+}
+You can hook into lifecycle events:
+- onRemembered() → setup resources
+- onForgotten() → cleanup when removed
+- onAbandoned() → cleanup if composition fails
+Think of it like lifecycle callbacks for remembered objects.
+
+💡 TL;DR
+remember = smart caching across recompositions
+- Tracks key changes via changed()
+- Stores results in the Slot Table
+- Recalculates only when invalid
+- Hooks into lifecycle with RememberObserver
+It’s the invisible performance hero behind every Compose app 💚
+
+What’s one part of the remember mechanism that surprised you the most? 👇
