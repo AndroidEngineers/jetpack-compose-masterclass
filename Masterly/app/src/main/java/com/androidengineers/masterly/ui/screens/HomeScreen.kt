@@ -28,75 +28,53 @@ fun HomeScreenPreview() {
 
 @Composable
 fun HomeScreen(
-    onOpenSkill: (String) -> Unit = {},
-    onOpenQuickLog: () -> Unit = {},
-    onOpenSettings: () -> Unit = {},
-    onOpenPremium: () -> Unit = {},
-    onOpenAnalytics: () -> Unit = {}
+    modifier: Modifier =  Modifier
 ) {
-    Scaffold(
-        topBar = {
-            HomeTopAppBar(
-                onAnalyticsClick = onOpenAnalytics,
-                onSettingsClick = onOpenSettings,
-                onProClick = onOpenPremium
-            )
-        },
-        containerColor = Color(0xFF121212),
-        floatingActionButton = {
-            HomeFloatingActionButton() { onOpenQuickLog() }
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("No skills yet")
-                Button(onClick = {
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("No skills yet")
+            Button(onClick = {
 
-                }) {
-                    Text("Add Skill")
-                }
+            }) {
+                Text("Add Skill")
             }
         }
+    }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("")
-                Button(onClick = {
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("")
+            Button(onClick = {
 
-                }) {
-                    Text("Retry")
-                }
+            }) {
+                Text("Retry")
             }
         }
+    }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp),
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
 
-        }
     }
 }

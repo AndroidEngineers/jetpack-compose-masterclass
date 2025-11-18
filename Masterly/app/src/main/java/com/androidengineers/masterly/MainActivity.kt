@@ -6,13 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import com.androidengineers.masterly.ui.components.HomeFloatingActionButton
+import com.androidengineers.masterly.ui.components.HomeTopAppBar
 import com.androidengineers.masterly.ui.screens.HomeScreen
 import com.androidengineers.masterly.ui.theme.MasterlyTheme
 
@@ -23,26 +22,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MasterlyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen {  }
+                Scaffold(
+                    topBar = {
+                        HomeTopAppBar(
+                            onAnalyticsClick = {},
+                            onSettingsClick = {},
+                            onProClick = {}
+                        )
+                    },
+                    containerColor = Color(0xFF121212),
+                    floatingActionButton = {
+                        HomeFloatingActionButton() {  }
+                    }
+                ) { padding ->
+                    HomeScreen(modifier = Modifier.padding(padding))
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MasterlyTheme {
-        Greeting("Android")
     }
 }
