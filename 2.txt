@@ -1,0 +1,45 @@
+🔹 Bridging the Old and the New — Compose UI inside Traditional Views 💚
+
+Ever wondered how Jetpack Compose integrates inside the old Android View system?
+I broke down the core architecture behind it — and it’s beautifully designed.
+
+Let’s unpack the two key classes that make this magic possible 👇
+
+
+🧩 1. AbstractComposeView — The Real MVP
+This class is the foundation that allows Compose to live inside traditional XML-based UIs.
+It handles:
+- Composition lifecycle (create → dispose → recreate)
+- Parent context resolution with caching (via WeakReference)
+- Lifecycle + saved state integration
+- Prevents adding child views directly (only Compose allowed)
+
+💡 Smart touch:
+ It even remembers its parent CompositionContext across transitions (like ViewOverlay) — using a caching strategy that avoids memory leaks.
+
+⚡ 2. ComposeView — Your Entry Point
+This one’s the friendly wrapper most of us use.
+Under the hood:
+- Delays composition until setContent()
+- Uses mutableStateOf for reactive updates
+- Automatically disposes based on ViewCompositionStrategy
+Basically, it does all the heavy lifting while giving us a simple API.
+
+🧠 Design Patterns at Play
+1. Template Method — Base defines flow, subclass implements Content()
+2. Lazy Initialization — Composition created only when needed
+3. Guard Clauses — Blocks misuse with checkAddView()
+4. Lifecycle Awareness — Hooks into LifecycleOwner for cleanup
+
+🔒 Safety + Performance
+- WeakReference to avoid leaks
+- Validates attachment before composing
+- Handles recomposer shutdown gracefully
+- Accessibility-ready out of the box
+
+visualizes how all this fits together —
+you’ll want to save this post for your next hybrid View + Compose project 💚
+
+What’s one thing that surprised you the first time you explored ComposeView? 👇
+
+Or — drop 💚 if you’ve ever integrated Compose into a legacy app.
