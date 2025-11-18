@@ -40,5 +40,11 @@ You’ll want to save this for your next Compose deep dive 🧠
 🗺️ I’ve also built a complete flow diagram that visually explains this process — from developer call → lazy creation → runtime materialization → isolated instances.
 👉 Check the image below to see how everything connects.
 
+
+
 💬 What’s one Modifier.composed use case you’ve built recently?
 Animations, gestures, or something custom? Drop it below 👇
+
+
+![modifier](https://media.licdn.com/dms/image/v2/D4D22AQFP1WEKrTd1aA/feedshare-shrink_1280/B4DZo9IpOEJAAs-/0/1761962270291?e=1764806400&v=beta&t=qR9JOu5DKjrsawnqVa42GNzBhG0-zahfZ9GpFl6Hz7E
+)
