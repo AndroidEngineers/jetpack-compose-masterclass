@@ -1,0 +1,23 @@
+By the end of Day 1, We should:
+
+Know what a Composable really is (and how it’s different from XML views).
+
+Have a simple mental model of recomposition (not the full runtime yet, just enough).
+
+Be able to use:
+
+@Composable
+@Preview
+Modifier
+Column/Row/Box
+Understand state basics:
+remember { mutableStateOf(...) }
+
+Why recomposition happens when state changes
+
+Have a project skeleton of Masterly Lite set up:
+
+Packages
+Theme
+One basic “Timer” screen UI stub
+Nav placeholder (even if real Navigation is on Day 4)
