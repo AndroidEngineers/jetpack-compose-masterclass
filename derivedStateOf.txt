@@ -1,0 +1,42 @@
+Ever wondered how Jetpack Compose knows exactly when to recompute your UI — without recalculating everything? 🤔
+
+Let’s break down how derived state actually works under the hood — with a diagram and some mind-blowing caching logic 💚
+
+🧠 What’s “Derived State”?
+In Compose, a derived state is a smart value that updates itself when the states it depends on change.
+You don’t manually recompute it — Compose just knows.
+
+Here’s how that magic happens 👇
+⚙️ Core Components
+1️⃣ DerivedState Interface
+Defines the contract. Holds the current computed record + mutation policy to decide when updates matter.
+2️⃣ DerivedSnapshotState
+This is the brain 🧩
+Takes a calculation lambda
+Tracks dependencies automatically
+Caches results and reuses them when still valid
+3️⃣ ResultRecord
+Stores the cached value + dependency metadata:
+Which states it depends on
+Snapshot IDs
+Hashes for quick invalidation
+
+🔍 How Compose Decides to Recompute
+When you read a derived state:
+It checks if the cache is valid.
+If yes → returns cached value (no recomputation).
+If invalid → recomputes by observing all state reads during calculation.
+Compares new vs old using the mutation policy before updating.
+Basically — if nothing really changed, nothing re-renders. ⚡
+
+💡 Key Insights
+✅ Performance — Snapshot IDs + dependency hashes make cache validation super cheap.
+✅ Dependency Management — Nested read levels prevent infinite recursion.
+✅ Thread Safety — Uses thread-local snapshots for safe recomputation.
+✅ Self-Reference Protection — Stops derived states from reading themselves.
+
+Compose’s derived state system is honestly one of the most elegant caching + reactive mechanisms I’ve seen in modern UI frameworks.
+
+It’s reactivity with brains. 🧩
+
+💬 What’s your favorite “hidden gem” in Compose’s internals?
