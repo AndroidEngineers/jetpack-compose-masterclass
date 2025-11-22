@@ -1,6 +1,7 @@
 package com.androidengineers.masterly.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,9 +18,10 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
         startDestination = "home"
     ) {
 
-        composable("home") {
+        composable("home",
+            ) {
             HomeScreen(modifier) {
-                navController.navigate("timer")
+               navController.navigate("timer/$it")
             }
         }
 
@@ -27,8 +29,11 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
             SettingsScreen(modifier)
         }
 
-        composable("timer") {
-            TimerScreen()
+        composable(
+            route = "timer/{skillName}"
+        ) { backStackEntry ->
+            val skillName = backStackEntry.arguments?.getString("skillName") ?: "default_value"
+            TimerScreen(skillName = skillName)
         }
     }
 }

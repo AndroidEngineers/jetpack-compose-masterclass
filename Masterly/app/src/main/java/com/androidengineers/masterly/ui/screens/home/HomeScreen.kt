@@ -31,7 +31,7 @@ fun HomeScreenPreview() {
 fun HomeScreen(
     modifier: Modifier =  Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel(),
-    navigateToTimer: () -> Unit
+    navigateToTimer: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -97,7 +97,7 @@ fun HomeScreen(
                         skill.minutesPracticed,
                         skill.goalMinutes,
                         onClick = {
-                            navigateToTimer()
+                            navigateToTimer(skill.name)
                         }
                     )
                 }

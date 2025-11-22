@@ -27,11 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.androidengineers.masterly.R
 
 @Composable
-fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel()) {
+fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
+                skillName: String) {
     val time by timerViewModel.time.collectAsState()
     val isRunning by timerViewModel.isRunning.collectAsState()
 
@@ -45,7 +46,7 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel()) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Coding",
+                text = skillName,
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 24.sp,
@@ -124,10 +125,4 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel()) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF1C1B1F)
-@Composable
-fun TimerScreenPreview() {
-    TimerScreen(hiltViewModel())
 }

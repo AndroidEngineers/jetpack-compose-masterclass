@@ -33,11 +33,3 @@ fun HomeFloatingActionButton(
     }
 }
 
-@Preview
-@Composable
-private fun HomeFloatingActionButtonPreview() {
-    MasterlyTheme {
-        HomeFloatingActionButton() {}
-    }
-}
-
