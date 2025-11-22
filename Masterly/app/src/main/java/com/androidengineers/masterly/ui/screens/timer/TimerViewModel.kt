@@ -1,6 +1,5 @@
 package com.androidengineers.masterly.ui.screens.timer
 
-import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel

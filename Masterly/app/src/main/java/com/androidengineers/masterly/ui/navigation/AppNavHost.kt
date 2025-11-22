@@ -13,11 +13,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.androidengineers.masterly.ui.screens.home.HomeScreen
-import com.androidengineers.masterly.ui.screens.settings.SettingsScreen
+import com.androidengineers.masterly.ui.screens.home.HomeScreenViewModel
+import com.androidengineers.masterly.ui.screens.settings.RememberUpdatedStateDemo
 import com.androidengineers.masterly.ui.screens.timer.TimerScreen
 
 @Composable
-fun AppNavHost(modifier: Modifier, navController: NavHostController) {
+fun AppNavHost(
+    modifier: Modifier,
+    navController: NavHostController,
+    homeScreenViewModel: HomeScreenViewModel
+) {
 
     NavHost(
         navController = navController,
@@ -26,13 +31,14 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
 
         composable("home",
             ) {
-            HomeScreen(modifier) {
+            HomeScreen(modifier, homeScreenViewModel = homeScreenViewModel) {
                navController.navigate("timer/$it")
             }
         }
 
         composable("settings") {
-            SettingsScreen(modifier)
+            //SettingsScreen(modifier)
+            RememberUpdatedStateDemo()
         }
 
         composable(

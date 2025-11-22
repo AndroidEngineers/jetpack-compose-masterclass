@@ -3,8 +3,11 @@ package com.androidengineers.masterly.ui.screens.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.androidengineers.masterly.data.local.Skill
+import com.androidengineers.masterly.domain.usecase.AddSkillUseCase
+import com.androidengineers.masterly.domain.usecase.GetSkillsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,14 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-@Stable
-data class Skill(
-    val id: String,
-    val name: String,
-    val minutesPracticed: Int,
-    val goalMinutes: Int
-)
+import javax.inject.Inject
 
 sealed class DashboardUiState {
     data object Loading : DashboardUiState()
@@ -29,24 +25,29 @@ sealed class DashboardUiState {
     data class Error(val message: String) : DashboardUiState()
 }
 
+sealed interface DashboardEvent {
+    data class AddSkill(
+        val name: String,
+        val goalMinutes: Int
+    ) : DashboardEvent
+}
+
+sealed interface DashboardEffect {
+    data class ShowError(val message: String) : DashboardEffect
+    data object SkillAdded : DashboardEffect
+}
+
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(): ViewModel() {
+class HomeScreenViewModel @Inject constructor(
+    private val getSkillsUseCase: GetSkillsUseCase,
+    private val addSkillUseCase: AddSkillUseCase
+) : ViewModel() {
 
-    private val _dummySkills = MutableStateFlow(
-        listOf(
-            Skill("1", "Android Development", 1450, 10000 * 60),
-            Skill("2", "Kotlin", 620, 5000 * 60),
-            Skill("3", "Jetpack Compose", 980, 3000 * 60),
-            Skill("4", "UI/UX Design", 260, 2000 * 60),
-            Skill("5", "System Design", 140, 1500 * 60),
-            Skill("6", "DSA", 450, 2000 * 60),
-            Skill("7", "Public Speaking", 90, 500 * 60)
-        )
-    )
-
-    private val _uiState: MutableStateFlow<DashboardUiState> =
-        MutableStateFlow(DashboardUiState.Loading)
+    private val _uiState: MutableStateFlow<DashboardUiState> = MutableStateFlow(DashboardUiState.Loading)
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
+
+    private val _effects = MutableSharedFlow<DashboardEffect>()
+    val effects = _effects
 
     init {
         observeSkills()
@@ -54,7 +55,7 @@ class HomeScreenViewModel @Inject constructor(): ViewModel() {
 
     private fun observeSkills() {
         viewModelScope.launch {
-            _dummySkills
+            getSkillsUseCase()
                 .map { skills ->
                     if (skills.isEmpty())
                         DashboardUiState.Empty
@@ -64,27 +65,41 @@ class HomeScreenViewModel @Inject constructor(): ViewModel() {
                 .onStart { emit(DashboardUiState.Loading) }
                 .catch { throwable ->
                     emit(DashboardUiState.Error(throwable.message ?: "Failed to load skills"))
+                    _effects.emit(
+                        DashboardEffect.ShowError(
+                            throwable.message ?: "Failed to load skills"
+                        )
+                    )
                 }
                 .collect { newState -> _uiState.value = newState }
         }
     }
 
-    fun addSkill(name: String, goalMinutes: Int) {
+    fun onEvent(event: DashboardEvent) {
+        when (event) {
+            is DashboardEvent.AddSkill -> handleAddSkill(
+                name = event.name,
+                goalMinutes = event.goalMinutes
+            )
+        }
+    }
+
+    private fun handleAddSkill(name: String, goalMinutes: Int) {
         viewModelScope.launch {
             runCatching {
                 val newSkill = Skill(
-                    id = System.currentTimeMillis().toString(),
                     name = name,
                     minutesPracticed = 0,
                     goalMinutes = goalMinutes
                 )
-                _dummySkills.update { oldList ->
-                    oldList + newSkill
-                }
+                addSkillUseCase(newSkill)
+            }.onSuccess {
+                _effects.emit(DashboardEffect.SkillAdded)
             }.onFailure { throwable ->
-                _uiState.update { DashboardUiState.Error(throwable.message ?: "Unknown error") }
+                val msg = throwable.message ?: "Unknown error"
+                _uiState.update { DashboardUiState.Error(throwable.message ?: msg) }
+                _effects.emit(DashboardEffect.ShowError(msg))
             }
         }
     }
-
 }
