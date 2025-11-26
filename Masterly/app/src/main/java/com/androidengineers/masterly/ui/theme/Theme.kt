@@ -51,27 +51,9 @@ fun MasterlyTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val white = Color.White
-
-    val customColorScheme = darkColorScheme(
-        primary = Color(0xFFBB86FC),
-        onPrimary = white,
-        secondary = Color(0xFF03DAC6),
-        onSecondary = white,
-        background = Color(0xFF121212),
-        onBackground = white,
-        surface = Color(0xFF1E1E1E),
-        onSurface = white,
-        tertiary = Color(0xFF03DAC6)
+    MaterialTheme(
+        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        typography = MasterlyTypography(),
+        content = content
     )
-
-    CompositionLocalProvider(
-        LocalContentColor provides white
-    ) {
-        MaterialTheme(
-            colorScheme = customColorScheme,
-            typography = MasterlyTypography(),
-            content = content
-        )
-    }
 }

@@ -56,6 +56,11 @@ dependencies {
     implementation(libs.hiltAndroid)
     kapt(libs.hiltCompiler)
 
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0")) // Use the latest BoM version
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation("com.google.firebase:firebase-analytics")
+
     // Compose navigation for Hilt
     implementation(libs.hiltNavigationCompose)
 

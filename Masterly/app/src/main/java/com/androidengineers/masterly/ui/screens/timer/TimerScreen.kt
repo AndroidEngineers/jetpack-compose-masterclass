@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,14 +29,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidengineers.masterly.R
 
 @Composable
 fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
                 skillName: String) {
     val time by timerViewModel.time.collectAsState()
-    val isRunning by timerViewModel.isRunning.collectAsState()
+    val isRunning by timerViewModel.isRunning.collectAsStateWithLifecycle()
 
+    println("===== timerViewModel 1 ${timerViewModel.toString()}")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,16 +67,7 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
 
         Text(
             text = time,
-            style = TextStyle(
-                color = Color(0xFFD0BCFF),
-                fontSize = 80.sp,
-                fontWeight = FontWeight.Bold,
-                shadow = Shadow(
-                    color = Color(0xFFD0BCFF),
-                    offset = Offset(0f, 0f),
-                    blurRadius = 16f
-                )
-            )
+            style = MaterialTheme.typography.displayLarge
         )
 
         Row(

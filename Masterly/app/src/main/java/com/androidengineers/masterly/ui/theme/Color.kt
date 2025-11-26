@@ -76,3 +76,7 @@ val PremiumFeatureGradientStart = Color(0xFF6366F1) // Indigo
 val PremiumFeatureGradientMiddle = Color(0xFF8B5CF6) // Violet
 val PremiumFeatureGradientEnd = Color(0xFF06B6D4) // Cyan
 val PremiumFeatureSubtitle = Color(0xFF9CA3AF) // text-gray-400
+
+val Purple500 = Color(0xFF073042)
+val Teal200 = Color(0xFF3ddc84)
+val Indicator = Color(0xFF4285f4)

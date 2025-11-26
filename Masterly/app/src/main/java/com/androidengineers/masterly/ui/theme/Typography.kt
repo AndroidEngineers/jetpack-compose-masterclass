@@ -19,6 +19,8 @@ fun InterFontFamily() = FontFamily(
     Font(R.font.inter_extrabold, weight = FontWeight.ExtraBold),
 )
 
+
+
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun MasterlyTypography(): Typography {

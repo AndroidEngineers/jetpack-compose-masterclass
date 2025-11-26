@@ -23,7 +23,6 @@ fun AppNavHost(
     navController: NavHostController,
     homeScreenViewModel: HomeScreenViewModel
 ) {
-
     NavHost(
         navController = navController,
         startDestination = "home"
@@ -48,7 +47,7 @@ fun AppNavHost(
                     type = NavType.StringType
                     defaultValue = "default_value"
                     nullable = false
-                }
+                },
             ),
             deepLinks = listOf(
                 navDeepLink {
