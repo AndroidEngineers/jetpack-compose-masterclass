@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.androidengineers.masterly.LocalAnalytics
 import com.androidengineers.masterly.R
 
 @Preview
@@ -38,11 +37,6 @@ fun HomeTopAppBar(
     onSettingsClick: () -> Unit = {},
     onProClick: () -> Unit = {}
 ) {
-    val analytics = LocalAnalytics.current
-    LaunchedEffect(Unit) {
-        analytics.logEvent("HomeTopAppBar Shown")
-    }
-
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF121212)

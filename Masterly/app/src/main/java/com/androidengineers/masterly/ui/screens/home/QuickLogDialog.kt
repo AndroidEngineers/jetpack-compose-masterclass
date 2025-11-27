@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -33,11 +31,11 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun QuickLogDialog(
     onDismissRequest: () -> Unit,
-    onAddNewSkill: (name: String, goalMinutes: Int) -> Unit,
+    onAddNewSkill: (name: String) -> Unit,
 ) {
     AddSkillDialog(
-        onSave = { name, goal ->
-            onAddNewSkill(name, goal)
+        onSave = { name ->
+            onAddNewSkill(name)
         },
         onDismissRequest = onDismissRequest
     )
@@ -46,13 +44,11 @@ fun QuickLogDialog(
 @Composable
 private fun AddSkillDialog(
     onDismissRequest: () -> Unit,
-    onSave: (name: String, goalMinutes: Int) -> Unit
+    onSave: (name: String) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
-    var goalText by remember { mutableStateOf("") }
 
-    val goalMinutes = goalText.toIntOrNull() ?: 0
-    val isSaveEnabled = name.isNotBlank() && goalMinutes > 0
+    val isSaveEnabled = name.isNotBlank()
 
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
@@ -84,26 +80,6 @@ private fun AddSkillDialog(
                     )
                 )
 
-                TextField(
-                    value = goalText,
-                    onValueChange = { value ->
-                        if (value.all { it.isDigit() }) {
-                            goalText = value
-                        }
-                    },
-                    label = { Text("Practice Goal (minutes)") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color(0xFF222222),
-                        focusedContainerColor = Color(0xFF222222),
-                        unfocusedTextColor = Color.White,
-                        focusedTextColor = Color.White,
-                        cursorColor = Color(0xFF7C3AED)
-                    )
-                )
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
@@ -117,7 +93,7 @@ private fun AddSkillDialog(
                     }
                     Button(
                         onClick = {
-                            onSave(name, goalMinutes)
+                            onSave(name)
                             onDismissRequest()
                         },
                         enabled = isSaveEnabled,
@@ -142,7 +118,7 @@ private fun QuickLogDialogPreview() {
     ) {
         QuickLogDialog(
             onDismissRequest = {},
-            onAddNewSkill = { _, _ -> }
+            onAddNewSkill = { _ -> }
         )
     }
 }
@@ -150,5 +126,5 @@ private fun QuickLogDialogPreview() {
 @Preview
 @Composable
 private fun AddSkillDialogPreview() {
-    AddSkillDialog(onDismissRequest = {}, onSave = { _, _ -> })
+    AddSkillDialog(onDismissRequest = {}, onSave = { _ -> })
 }

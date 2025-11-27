@@ -15,7 +15,19 @@ class SkillsRepositoryImpl @Inject constructor(
         return skillDao.getAllSkills()
     }
 
+    override fun getSkillById(id: Int): Flow<Skill?> {
+        return skillDao.getSkillById(id)
+    }
+
     override suspend fun addSkill(skill: Skill) {
         skillDao.insert(skill)
+    }
+
+    override suspend fun updateSkill(skill: Skill) {
+        skillDao.update(skill)
+    }
+
+    override suspend fun deleteSkill(skill: Skill) {
+        skillDao.delete(skill)
     }
 }

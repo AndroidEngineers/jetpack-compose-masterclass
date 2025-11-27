@@ -17,32 +17,34 @@ import com.androidengineers.masterly.ui.theme.TrackColor
 @Preview()
 @Composable
 fun ProgressBarPreview_Half() {
-    ProgressBar(progress = 50)
+    ProgressBar(progress = 50f)
 }
 
 @Preview()
 @Composable
 fun ProgressBarPreview_Empty() {
-    ProgressBar(progress = 0)
+    ProgressBar(progress = 0f)
 }
 
 @Preview()
 @Composable
 fun ProgressBarPreview_Full() {
-    ProgressBar(progress = 100)
+    ProgressBar(progress = 100f)
 }
 
 @Preview()
 @Composable
 fun ProgressBarPreview_Partial() {
-    ProgressBar(progress = 75)
+    ProgressBar(progress = 75f)
 }
 
 @Composable
 fun ProgressBar(
-    progress: Int,
+    progress: Float,
     modifier: Modifier = Modifier
 ) {
+    val effectiveProgress = if (progress > 0f) progress.coerceAtLeast(0.5f) else 0f
+    
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -52,7 +54,7 @@ fun ProgressBar(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(progress / 100f)
+                .fillMaxWidth(effectiveProgress / 100f)
                 .background(
                     color = ProgressFill, shape = RoundedCornerShape(
                         topStart = 50.dp,

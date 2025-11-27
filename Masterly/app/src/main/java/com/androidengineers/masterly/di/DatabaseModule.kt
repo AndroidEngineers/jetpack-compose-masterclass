@@ -22,7 +22,9 @@ object DatabaseModule {
             context,
             SkillDatabase::class.java,
             "skill_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

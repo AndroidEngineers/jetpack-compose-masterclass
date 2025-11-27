@@ -1,192 +1,486 @@
 package com.androidengineers.masterly.ui.screens.settings
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.androidengineers.masterly.ui.theme.MasterlyTheme
-import kotlinx.coroutines.delay
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun RememberUpdatedStateDemo(modifier: Modifier = Modifier) {
-    var message by remember { mutableStateOf("Initial message") }
-    // A counter to trigger the effects when the button is clicked
-    var trigger by remember { mutableStateOf(0) }
-
-    var wrongResult by remember { mutableStateOf("Click the button to start") }
-    var rightResult by remember { mutableStateOf("Click the button to start") }
-
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {}
+) {
+    var pushNotificationsEnabled by remember { mutableStateOf(true) }
+    
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .background(Color(0xFF121212))
+            .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = "remember vs. rememberUpdatedState",
-            style = MaterialTheme.typography.titleLarge,
-            color = Color.White
+        // Header
+        SettingsHeader(onBackClick = onBackClick)
+        
+        // Upgrade Banner
+        UpgradeBanner(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Pro Features Section
+        SettingsSectionHeader(title = "Pro Features")
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Cloud Sync & Backup",
+            subtitle = "Sync your data across all devices"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Daily Reminders",
+            subtitle = "Get notified to practice your skills"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Custom Themes & Icons",
+            subtitle = "Personalize your app appearance"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Advanced Analytics",
+            subtitle = "Detailed insights and progress tracking"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Focus Challenges",
+            subtitle = "Join skill mastery challenges"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Milestones & Badges",
+            subtitle = "Earn rewards for your progress"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "CSV Export & Calendar Sync",
+            subtitle = "Export data and sync with calendar"
+        )
+        
+        ProFeatureItem(
+            icon = Icons.Default.Notifications,
+            title = "Voice Notes",
+            subtitle = "Record reflections after sessions"
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // General Section
+        SettingsSectionHeader(title = "General")
+        
+        SettingsToggleItem(
+            icon = Icons.Default.Notifications,
+            title = "Push Notifications",
+            subtitle = "Receive app notifications",
+            checked = pushNotificationsEnabled,
+            onCheckedChange = { pushNotificationsEnabled = it }
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Account & Support Section
+        SettingsSectionHeader(title = "Account & Support")
+        
+        SettingsNavigationItem(
+            icon = Icons.Default.Person,
+            title = "Account Settings",
+            subtitle = "Manage your profile",
+            onClick = { /* TODO */ }
+        )
+        
+        SettingsActionItem(
+            icon = Icons.Default.Notifications,
+            title = "Backup Data",
+            subtitle = "Pro feature - Cloud backup",
+            actionText = "Backup Now",
+            onClick = { /* TODO */ }
+        )
+        
+        SettingsActionItem(
+            icon = Icons.Default.Notifications,
+            title = "Export Data",
+            subtitle = "Pro feature - Data export",
+            actionText = "Export CSV",
+            onClick = { /* TODO */ }
+        )
+        
+        SettingsNavigationItem(
+            icon = Icons.Default.Notifications,
+            title = "Privacy & Security",
+            subtitle = "Data and privacy settings",
+            onClick = { /* TODO */ }
+        )
+        
+        SettingsNavigationItem(
+            icon = Icons.Default.Notifications,
+            title = "Help & Support",
+            subtitle = "Get help and contact us",
+            onClick = { /* TODO */ }
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
 
-        Spacer(Modifier.height(8.dp))
+@Composable
+private fun SettingsHeader(onBackClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBackClick) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(8.dp))
+        
+        Text(
+            text = "Settings",
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
 
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            label = { Text("Message") },
+@Composable
+private fun UpgradeBanner(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(0xFF7C3AED),
+                        Color(0xFF3B82F6)
+                    )
+                )
+            )
+            .clickable { /* TODO: Navigate to upgrade */ }
+            .padding(16.dp)
+    ) {
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedLabelColor = Color.Gray,
-                unfocusedLabelColor = Color.Gray,
-                focusedContainerColor = Color(0xFF333333),
-                unfocusedContainerColor = Color(0xFF333333),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
+                Column {
+                    Text(
+                        text = "Upgrade to Pro",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = "Unlock all premium features",
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+            
+            Button(
+                onClick = { /* TODO: Navigate to upgrade */ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF7C3AED)
+                ),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Upgrade",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsSectionHeader(title: String) {
+    Text(
+        text = title,
+        color = Color.White,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
+private fun ProFeatureItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { /* TODO: Show upgrade prompt */ }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFF2A2A2A)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color(0xFF7C3AED),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = subtitle,
+                color = Color.Gray,
+                fontSize = 12.sp
+            )
+        }
+        
+        Icon(
+            imageVector = Icons.Default.Lock,
+            contentDescription = "Locked",
+            tint = Color.Gray,
+            modifier = Modifier.size(16.dp)
+        )
+    }
+}
+
+@Composable
+private fun SettingsToggleItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFF2A2A2A)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = subtitle,
+                color = Color.Gray,
+                fontSize = 12.sp
+            )
+        }
+        
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = Color(0xFF7C3AED),
+                uncheckedThumbColor = Color.Gray,
+                uncheckedTrackColor = Color(0xFF2A2A2A)
             )
         )
+    }
+}
 
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            onClick = {
-                // Clear previous results and trigger the effects
-                wrongResult = "Timer started..."
-                rightResult = "Timer started..."
-                trigger++
-            },
-            modifier = Modifier.fillMaxWidth()
+@Composable
+private fun SettingsNavigationItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFF2A2A2A)),
+            contentAlignment = Alignment.Center
         ) {
-            Text("Show message after 3 seconds")
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
         }
-
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-            text = "Instructions: Click the button, then change the message within 3 seconds to see the difference.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.LightGray
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        // Example 1: `remember`
-        Text(
-            text = "❌ 1. Using `remember` (Incorrect):",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White
-        )
-        Text(
-            text = "The LaunchedEffect captures the `message` at the moment the timer starts. It won't see any subsequent changes.",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-        Text(text = "Result: $wrongResult", color = Color.White)
-
-        Spacer(Modifier.height(16.dp))
-
-        // Example 2: `rememberUpdatedState`
-        Text(
-            text = "✅ 2. Using `rememberUpdatedState` (Correct):",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White
-        )
-        Text(
-            text = "`rememberUpdatedState` provides the latest `message` value to the effect, even though the effect itself doesn't restart.",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-        Text(text = "Result: $rightResult", color = Color.White)
-
-        // The child composables that run the delayed tasks
-        IncorrectDelayedReader(
-            trigger = trigger,
-            message = message,
-            onTimeout = { value ->
-                wrongResult = value
-            }
-        )
-
-        CorrectDelayedReader(
-            trigger = trigger,
-            message = message,
-            onTimeout = { value ->
-                rightResult = value
-            }
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = subtitle,
+                color = Color.Gray,
+                fontSize = 12.sp
+            )
+        }
+        
+        Icon(
+            imageVector = Icons.Default.Notifications,
+            contentDescription = "Navigate",
+            tint = Color.Gray,
+            modifier = Modifier.size(20.dp)
         )
     }
 }
 
-/**
- * ❌ INCORRECT: The LaunchedEffect captures the `message` on launch.
- */
 @Composable
-private fun IncorrectDelayedReader(
-    trigger: Int,
-    message: String,
-    onTimeout: (String) -> Unit
+private fun SettingsActionItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    actionText: String,
+    onClick: () -> Unit
 ) {
-    // This effect re-launches whenever `trigger` changes.
-    LaunchedEffect(trigger) {
-        // We don't want this to run on the initial composition
-        if (trigger == 0) return@LaunchedEffect
-
-        delay(3000)
-        // It uses the `message` value captured 3 seconds ago when the effect was launched.
-        onTimeout("The message was: '$message'")
-    }
-}
-
-/**
- * ✅ CORRECT: Uses `rememberUpdatedState` to access the latest `message`.
- */
-@Composable
-private fun CorrectDelayedReader(
-    trigger: Int,
-    message: String,
-    onTimeout: (String) -> Unit
-) {
-    // `latestMessage` is a reference that is always updated on every recomposition.
-    val latestMessage by rememberUpdatedState(message)
-
-    LaunchedEffect(trigger) {
-        if (trigger == 0) return@LaunchedEffect
-
-        delay(3000)
-        // Reading `latestMessage` here gives us the most current value,
-        // even though the effect was launched 3 seconds ago.
-        onTimeout("The message is: '$latestMessage'")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun RememberUpdatedStateDemoPreview() {
-    MasterlyTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF121212)) {
-            RememberUpdatedStateDemo()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFF2A2A2A)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = subtitle,
+                color = Color.Gray,
+                fontSize = 12.sp
+            )
+        }
+        
+        TextButton(
+            onClick = onClick,
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = Color(0xFF7C3AED)
+            )
+        ) {
+            Text(
+                text = actionText,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

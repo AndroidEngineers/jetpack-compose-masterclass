@@ -900,7 +900,7 @@ fun SwipeToRevealDeleteExample(
 // 8) SequenceSplashAnimationExample
 @Composable
 fun SequenceSplashAnimationExample(modifier: Modifier = Modifier) {
-    val circles = List(3) { remember { Animatable(0f) } }
+    val circles = List(5) { remember { Animatable(0f) } }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -916,6 +916,7 @@ fun SequenceSplashAnimationExample(modifier: Modifier = Modifier) {
                     targetValue = 0.3f,
                     animationSpec = tween(250)
                 )
+                anim.stop()
             }
         }
     }
@@ -948,7 +949,7 @@ fun SequenceSplashAnimationExample(modifier: Modifier = Modifier) {
                             scaleY = 0.7f + 0.3f * scale
                             this.alpha = alpha
                         }
-                        .background(Purple500, CircleShape)
+                        .background(Teal200, CircleShape)
                 )
             }
         }
@@ -1015,7 +1016,6 @@ fun LoadingArcCanvasExample(modifier: Modifier = Modifier) {
                 (size.width - diameter) / 2f,
                 (size.height - diameter) / 2f
             )
-            val rect = Rect(topLeft, androidx.compose.ui.geometry.Size(diameter, diameter))
 
             drawArc(
                 color = Purple500,

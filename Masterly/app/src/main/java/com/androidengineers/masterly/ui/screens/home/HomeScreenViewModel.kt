@@ -89,7 +89,7 @@ class HomeScreenViewModel @Inject constructor(
             runCatching {
                 val newSkill = Skill(
                     name = name,
-                    minutesPracticed = 0,
+                    millisPracticed = 0L,
                     goalMinutes = goalMinutes
                 )
                 addSkillUseCase(newSkill)
@@ -102,4 +102,6 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
+
+
 }

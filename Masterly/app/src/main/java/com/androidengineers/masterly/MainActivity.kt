@@ -43,52 +43,13 @@ import com.androidengineers.masterly.ui.theme.MasterlyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
-data class AppSpacing(
-    val small: Dp = 4.dp,
-    val medium: Dp = 8.dp,
-    val large: Dp = 16.dp
-)
-
-interface Analytics {
-    fun logEvent(name: String, params: Map<String, Any?> = emptyMap())
-}
-
-class FirebaseAnalyticsImpl(
-    private val firebaseAnalytics: com.google.firebase.analytics.FirebaseAnalytics
-) : Analytics {
-
-    override fun logEvent(name: String, params: Map<String, Any?>) {
-        val bundle = Bundle().apply {
-            params.forEach { (key, value) ->
-                when (value) {
-                    is String -> putString(key, value)
-                    is Int -> putInt(key, value)
-                    is Long -> putLong(key, value)
-                    is Double -> putDouble(key, value)
-                    is Boolean -> putBoolean(key, value)
-                }
-            }
-        }
-        firebaseAnalytics.logEvent(name, bundle)
-    }
-}
-
-val LocalAnalytics = staticCompositionLocalOf<Analytics> {
-    error("No Analytics provided")
-}
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private lateinit var analyticsImpl: Analytics
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val firebaseAnalytics = com.google.firebase.analytics.FirebaseAnalytics.getInstance(this)
-        analyticsImpl = FirebaseAnalyticsImpl(firebaseAnalytics)
 
         setContent {
 
@@ -100,24 +61,23 @@ class MainActivity : ComponentActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
 
             var isDarkTheme by remember { mutableStateOf(false) }
-
-            CompositionLocalProvider(
-                LocalAnalytics provides analyticsImpl
-            ) {
                 MasterlyTheme(darkTheme = isDarkTheme) {
                     Scaffold(
                         topBar = {
-                            HomeTopAppBar(
-                                onAnalyticsClick = {},
-                                onSettingsClick = {
-                                    if (navController.currentDestination?.route != "settings")
-                                        navController.navigate("settings")
+                            if (currentDestination?.route?.startsWith("skillDetail") != true &&
+                                currentDestination?.route?.startsWith("settings") != true) {
+                                HomeTopAppBar(
+                                    onAnalyticsClick = {},
+                                    onSettingsClick = {
+                                        if (navController.currentDestination?.route != "settings")
+                                            navController.navigate("settings")
 
-                                },
-                                onProClick = {
+                                    },
+                                    onProClick = {
 
-                                }
-                            )
+                                    }
+                                )
+                            }
                         },
                         containerColor = Color(0xFF121212),
                         floatingActionButton = {
@@ -129,26 +89,7 @@ class MainActivity : ComponentActivity() {
                         },
                         snackbarHost = { SnackbarHost(snackbarHostState) }
                     ) { padding ->
-                        /*AppNavHost(modifier = Modifier.padding(padding), navController, homeScreenViewModel)
-                       */
-                        /*Button(
-                            modifier = Modifier
-                                .padding(padding),
-                            onClick = { isDarkTheme = !isDarkTheme },
-                            colors= ButtonDefaults.buttonColors(
-                                containerColor = if(isDarkTheme) Color.DarkGray else Color.Red
-                            ),
-                            elevation = ButtonDefaults.elevatedButtonElevation(
-                                pressedElevation = 20.dp
-                            )
-                        ) {
-                            Text(
-                                if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode"
-                            )
-                        }*/
-
-                        AnimationDisplayScreen(Modifier.padding(padding))
-
+                        AppNavHost(modifier = Modifier.padding(padding), navController, homeScreenViewModel)
                         LaunchedEffect(Unit) {
                             homeScreenViewModel.effects.collect { effect ->
                                 when (effect) {
@@ -166,11 +107,11 @@ class MainActivity : ComponentActivity() {
                         if (showQuickLogDialog) {
                             QuickLogDialog(
                                 onDismissRequest = { showQuickLogDialog = false },
-                                onAddNewSkill = { name, goalMinutes ->
+                                onAddNewSkill = { name ->
                                     homeScreenViewModel.onEvent(
                                         DashboardEvent.AddSkill(
                                             name = name,
-                                            goalMinutes = goalMinutes
+                                            goalMinutes = 600000 // 10,000 hours
                                         )
                                     )
                                 }
@@ -178,7 +119,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-            }
+        
         }
     }
 }

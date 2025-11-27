@@ -45,12 +45,8 @@ val LocalUserSession = compositionLocalOf<UserSession?> {
 fun HomeScreen(
     modifier: Modifier =  Modifier,
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
-    navigateToTimer: (String) -> Unit
+    navigateToDetail: (String) -> Unit
 ) {
-    var session by remember {
-        mutableStateOf<UserSession?>(null)
-    }
-
     val uiState by homeScreenViewModel.uiState.collectAsState()
 
     when (val state = uiState) {
@@ -71,16 +67,7 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("No skills yet")
-                    Button(onClick = {
-                        session = UserSession(
-                            id = "123",
-                            name = "Akshay",
-                            isPremium = true
-                        )
-                    }) {
-                        Text("Add Skill")
-                    }
+                    Text("No skills yet", color = Color.White)
                 }
             }
         }
@@ -103,8 +90,6 @@ fun HomeScreen(
         }
 
         is DashboardUiState.Content -> {
-            val context = LocalContext.current
-            println("====== ${context.toString()}")
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
@@ -112,34 +97,16 @@ fun HomeScreen(
                 contentPadding = PaddingValues(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
-                item {
-                    CompositionLocalProvider(
-                        LocalUserSession provides session
-                    ) {
-                        Text(session?.name + "is here", color = Color.White)
-                    }
-                    Button(onClick = {
-                        session = UserSession(
-                            id = "123",
-                            name = "Akshay",
-                            isPremium = true
-                        )
-                    }) {
-                        Text("Add Skill")
-                    }
-                }
-
                 items(count = state.skills.size, key = {
                     state.skills[it].id
                 }) { index ->
                     val skill = state.skills[index]
                     SkillCard(
                         skill.name,
-                        skill.minutesPracticed,
+                        skill.millisPracticed,
                         skill.goalMinutes,
                         onClick = {
-                            navigateToTimer(skill.name)
+                            navigateToDetail(skill.id.toString())
                         }
                     )
                 }

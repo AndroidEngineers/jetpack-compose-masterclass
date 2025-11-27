@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,14 +34,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidengineers.masterly.R
 
 @Composable
-fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
-                skillName: String) {
+fun TimerScreen(
+    modifier : Modifier,
+    timerViewModel: TimerViewModel = hiltViewModel(),
+    onBackClick: () -> Unit
+) {
     val time by timerViewModel.time.collectAsState()
     val isRunning by timerViewModel.isRunning.collectAsStateWithLifecycle()
+    val skillName by timerViewModel.skillName.collectAsState()
 
-    println("===== timerViewModel 1 ${timerViewModel.toString()}")
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF1C1B1F))
             .padding(16.dp),
@@ -67,7 +71,8 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
 
         Text(
             text = time,
-            style = MaterialTheme.typography.displayLarge
+            style = MaterialTheme.typography.displayLarge,
+            color = Color.White,
         )
 
         Row(
@@ -104,7 +109,11 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
                 )
             }
             IconButton(
-                onClick = { timerViewModel.stopTimer() },
+                onClick = { 
+                    timerViewModel.saveSession {
+                        onBackClick()
+                    }
+                },
                 modifier = Modifier
                     .size(64.dp)
                     .clip(CircleShape)
@@ -112,11 +121,13 @@ fun TimerScreen(timerViewModel: TimerViewModel = hiltViewModel(),
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_stop_circle_24),
-                    contentDescription = "Stop",
+                    contentDescription = "Save",
                     tint = Color(0xFFD0BCFF),
                     modifier = Modifier.size(32.dp)
                 )
             }
         }
+        
+
     }
 }

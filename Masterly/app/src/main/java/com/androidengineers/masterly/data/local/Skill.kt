@@ -9,6 +9,6 @@ data class Skill(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    val minutesPracticed: Int,
+    val millisPracticed: Long,
     val goalMinutes: Int
 )

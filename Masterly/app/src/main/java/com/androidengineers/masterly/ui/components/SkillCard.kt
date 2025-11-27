@@ -30,46 +30,6 @@ import com.androidengineers.masterly.R
 import com.androidengineers.masterly.ui.theme.LightCard
 import com.androidengineers.masterly.ui.theme.SkillCardHeight
 
-@Preview()
-@Composable
-fun SkillCardPreview() {
-    SkillCard(
-        name = "Android Development",
-        hoursLogged = 50,
-        totalHours = 100
-    )
-}
-
-@Preview()
-@Composable
-fun SkillCardPreview_LongName() {
-    SkillCard(
-        name = "Advanced Jetpack Compose UI Design and Animation",
-        hoursLogged = 75,
-        totalHours = 100
-    )
-}
-
-@Preview()
-@Composable
-fun SkillCardPreview_ZeroProgress() {
-    SkillCard(
-        name = "Kotlin Coroutines",
-        hoursLogged = 0,
-        totalHours = 50
-    )
-}
-
-@Preview()
-@Composable
-fun SkillCardPreview_FullProgress() {
-    SkillCard(
-        name = "Public Speaking",
-        hoursLogged = 20,
-        totalHours = 20
-    )
-}
-
 @Composable
 fun CardContainer(
     modifier: Modifier = Modifier,
@@ -87,12 +47,17 @@ fun CardContainer(
 @Composable
 fun SkillCard(
     name: String,
-    hoursLogged: Int,
-    totalHours: Int,
+    millisPracticed: Long,
+    goalMinutes: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    val percent = (hoursLogged.toFloat() / totalHours * 100).coerceAtMost(100f).toInt()
+    val goalMillis = goalMinutes * 60 * 1000L
+    val percent = (millisPracticed.toDouble() / goalMillis * 100).coerceAtMost(100.0)
+    val formattedPercent = "%.6f".format(percent)
+    val hoursLogged = (millisPracticed / (1000 * 60 * 60)).toInt()
+    val goalHours = goalMinutes / 60
+    
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
@@ -141,7 +106,7 @@ fun SkillCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "${hoursLogged.formatWithCommas()} / ${totalHours.formatWithCommas()} hours",
+                        text = "${hoursLogged.formatWithCommas()} / ${goalHours.formatWithCommas()} hours",
                         style = typography.bodySmall,
                         color = colorScheme.onSurfaceVariant
                     )
@@ -157,21 +122,21 @@ fun SkillCard(
                     Text(
                         text = "Progress",
                         style = typography.labelSmall,
-                        color = colorScheme.onSurfaceVariant
+                        color = Color.Gray
                     )
                     Text(
-                        text = "$percent%",
+                        text = "$formattedPercent%",
                         style = typography.bodyMedium.copy(
                             fontWeight = FontWeight.Medium
                         ),
-                        color = colorScheme.onSurface
+                        color = Color.White
                     )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProgressBar(
-                    progress = percent,
+                    progress = percent.toFloat(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
